@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zigyasa Bank</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            align-items: center;
+            height: 100vh;
+            background-image: url('bankimage.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+      .Bank{
+            text-align: center; 
+            margin-bottom: 20px; 
+            margin-bottom: 70px;
+            padding-top: 70px;
+        }
+      .bank,h1{
+            font-size: 40px;
+            font-weight:bolder;
+        }
+
+      .container {
+            width: 100%;
+            display: flex;
+            margin: 10px;
+        }
+      .form-container{
+            width: 550px;
+            height: 300px;
+            background-color: #f0c7f5;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-right: 30px;
+            margin-left: 15px;
+            
+        }
+      .table-container {
+            width: 900px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f0c7f5;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+           
+        }
+        h2{
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        input,
+        select,
+        button {
+            width: 100% ;
+            height: 38px;
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #af43e2;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #9005f4;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+      .withdrawPop,
+      .depositPop {
+            display: none;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+      .withdrawPopup,
+      .depop {
+            width: 400px;
+            height: 200px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .success-popup {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+  }
+ .success-card {
+    width: 300px;
+    height: 150px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+  }
+    </style>
+</head>
+
+<body>
+    <div class="Bank">
+        <h1>ZIGYASA BANK</h1>
+    </div>
+    <div class="container">
+        <div class="form-container">
+            <h2>New Account Registration</h2>
+            <form action="" method="post" id="userForm">
+                <input type="text" id="name" placeholder="Name" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="tel" id="phone" placeholder="Phone" required>
+                <select id="type" required>
+                    <option value="">Select Account Type</option>
+                    <option value="savings">Savings Account</option>
+                    <option value="current">Current Account</option>
+                </select>
+                <button type="button" onclick="createUserAccount()">Submit User Account</button>
+            </form>
+        </div>
+        <div class="table-container">
+            <h2>Account Holder List</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Account Balance</th>
+                        <th>Account Type</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="users"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="depositPop" id="depositPop">
+        <div class="depop">
+            <form onsubmit="event.preventDefault(); depositMoney(event.target.amount.value);">
+                <input type="number" name="amount" placeholder="Enter Amount" required>
+                <button type="submit">Deposit</button>
+            </form>
+            <button onclick="closeDeposit()">Close</button>
+        </div>
+    </div>
+    <div class="withdrawPop" id="withdrawPop">
+        <div class="withdrawPopup">
+            <form onsubmit="event.preventDefault(); withdrawMoney(event.target.amount.value);">
+                <input type="number" name="amount" placeholder="Enter Amount" required>
+                <button type="submit">Withdraw</button>
+            </form>
+            <button onclick="closeWithdraw()">Close</button>
+        </div>
+    </div>
+    <div class="success-popup" id="successPop">
+        <div class="success-card">
+          <h2>Deposit Successful!</h2>
+          <button onclick="closeSuccess()">Continue</button>
+        </div>
+      </div>
+      <div class="success-popup" id="successPopup">
+        <div class="success-card">
+          <h2>Transaction Successful!</h2>
+          <p>Your account has been updated.</p>
+          <button onclick="closeWithdraww()">Continue</button>
+        </div>
+      </div>
+
+    <script>
+      let users = []
+        function createUserAccount() {
+            let name = document.getElementById("name")
+            let email = document.getElementById("email")
+            let phone = document.getElementById("phone")
+            let type = document.getElementById("type")
+
+            let account = new User(name.value, email.value, phone.value, type.value)
+            users.push(account)
+
+            //make fields blank
+            name.value = ""
+            email.value = ""
+            phone.value = ""
+            type.value = ""
+            
+            fetchUsers()
+        }
+
+        function fetchUsers() {
+            let tbody = document.getElementById("users")
+            tbody.innerHTML = ""
+            users.forEach(function(item){
+                let tr = `
+                <td>${item.name}</td>
+                <td>${item.email}</td>
+                <td>${item.phone}</td>
+                <td>${item.balance}</td>
+                <td>${item.type}</td>
+                <td><button onclick='openDeposit(${users.indexOf(item)})'>Deposit</td>
+                <td><button onclick='openWithdraw(${users.indexOf(item)})'>Withdraw</td>
+                `
+                tbody.innerHTML += tr
+            })
+        }       
+        function openDeposit(amount) {
+            let depositPop = document.getElementById("depositPop")
+            depositPop.style.display = "flex"
+            currentUseramount = amount
+        }
+        function closeDeposit() {
+            let depositPop = document.getElementById("depositPop");
+            depositPop.style.display = "none";
+        }
+        function openWithdraw(amount) {
+            let withdrawPop = document.getElementById("withdrawPop");
+            withdrawPop.style.display = "flex";
+            closeDeposit(); 
+            currentUseramount = amount
+        }
+        function closeWithdraw() {
+            let withdrawPop = document.getElementById("withdrawPop");
+            withdrawPop.style.display = "none";
+        }
+        class User {
+            constructor(name, email, phone, type) {
+                this.name = name
+                this.email = email
+                this.phone = phone
+                this.accountNumber = Math.round(Math.random() * 100000000) //644984987
+                this.balance = 0
+                this.type = type
+            }
+
+            deposit(amount) {
+                this.balance = this.balance + amount
+            }
+            withdraw(amount) {
+                if(this.balance - amount >= 0) {
+                    this.balance = this.balance - amount
+                } else {
+                    console.log("Insufficient balance")
+                }
+            }
+displayDetails() {
+                console.log(this.name)
+                console.log(this.email)
+                console.log(this.phone)
+                console.log(this.type)
+                console.log(`Account Balance is: ${this.balance}`)
+                console.log(`Account Number: ${this.accountNumber}`)
+
+            }
+
+            updateName(name) {
+                this.name = name
+            }
+            updateEmail(email) {
+                this.email = email
+            }
+            updatePhone(phone) {
+                this.phone = phone
+            }
+        }
+
+        let u1 = new User('Rohit Singh Kandari', 'rohit.545info@gmail.com', 9876543210, 'savings');
+        let u2 = new User('Abhinav', 'abhi@gmail.com', 987654100, 'current')
+
+        function depositMoney(amount) {
+            users[currentUseramount].deposit(parseFloat(amount))
+            fetchUsers()
+            closeDeposit()
+            openSuccess()
+        }
+
+        function withdrawMoney(amount) {
+            users[currentUseramount].withdraw(parseFloat(amount))
+            
+            fetchUsers()
+            closeWithdraw()
+            openWithdraww()
+        }
+
+        function openSuccess() {
+    let successPop = document.getElementById("successPop")
+    successPop.style.display = "flex"
+  }
+
+  function closeSuccess() {
+    let successPop = document.getElementById("successPop")
+    successPop.style.display = "none"
+  }
+  function openWithdraww() {
+    let successPop = document.getElementById("successPopup")
+    successPop.style.display = "flex"
+  }
+
+  function closeWithdraww() {
+    let successPop = document.getElementById("successPopup")
+    successPop.style.display = "none"
+}
+    </script>
+</body>
+
+</html>
